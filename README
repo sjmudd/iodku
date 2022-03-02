@@ -1,0 +1,5 @@
+# iodku
+
+Testing inserts to a table and the time it takes.
+
+Related to: https://bugs.mysql.com/bug.php?id=106526
