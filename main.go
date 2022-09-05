@@ -39,6 +39,7 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
 	insertInterval := flag.String("insert-interval", "1s", "insert interval as understood by go")
+	count := flag.Int("count", -1, "number of inserts to perform, default -1 = infinite")
 	flag.Parse()
 
 	parsedInterval, err := time.ParseDuration(*insertInterval)
@@ -60,7 +61,8 @@ func main() {
 
 	}
 	defer db.Close()
-	for true {
+
+	for *count == -1 || *count > 0 {
 		func() {
 			started := time.Now()
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -75,5 +77,8 @@ func main() {
 		}()
 
 		time.Sleep(parsedInterval)
+		if *count != -1 {
+			*count--
+		}
 	}
 }
