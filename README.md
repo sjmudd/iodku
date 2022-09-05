@@ -58,7 +58,7 @@ $
 
 A sample output with errors might look like this:
 ```
-$ MYSQL_DSN='user_test:user_test@tcp(myhost:3306)/iodku' ./iodku --insert-interval=1s --count=10 --summary --max-wait=19ms
+$ MYSQL_DSN='user_test:user_pass@tcp(myhost:3306)/iodku' ./iodku --insert-interval=1s --count=10 --summary --max-wait=19ms
 2022/09/06 01:51:11.398199 OK: took: 9.171335ms
 2022/09/06 01:51:12.407491 OK: took: 8.341306ms
 2022/09/06 01:51:13.421910 OK: took: 14.060208ms
