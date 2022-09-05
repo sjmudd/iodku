@@ -4,6 +4,8 @@ Testing inserts to a table and the time it takes.
 
 Related to: https://bugs.mysql.com/bug.php?id=106526
 
+## Table definition
+
 Required table definition
 
 ```
@@ -30,8 +32,10 @@ to configure how `iodku` will connect to the server.
 
 ## Sample output
 
+Normal sample output might be:
+
 ```
-[user@myhost ~]$ MYSQL_DSN='user_test:user_pass@tcp(myhost:3306)/user_iodku' ./iodku --insert-interval=1s --count=10 --summary
+[user@myhost ~]$ MYSQL_DSN='user_test:user_pass@tcp(myhost:3306)/iodku' ./iodku --insert-interval=1s --count=10 --summary
 2022/09/06 01:19:18.999876 OK: took: 22.752079ms
 2022/09/06 01:19:20.020215 OK: took: 19.926164ms
 2022/09/06 01:19:21.040269 OK: took: 19.734472ms
@@ -50,4 +54,27 @@ to configure how `iodku` will connect to the server.
 2022/09/06 01:19:29.141841 - average:    16.22768ms
 2022/09/06 01:19:29.141844 - max:        22.752079ms
 [user@myhost ~]
+```
+
+A sample output with errors might look like this:
+```
+[user@myhost ~]$ MYSQL_DSN='user_test:user_test@tcp(myhost:3306)/iodku' ./iodku --insert-interval=1s --count=10 --summary --max-wait=19ms
+2022/09/06 01:51:11.398199 OK: took: 9.171335ms
+2022/09/06 01:51:12.407491 OK: took: 8.341306ms
+2022/09/06 01:51:13.421910 OK: took: 14.060208ms
+2022/09/06 01:51:14.436470 OK: took: 14.200061ms
+2022/09/06 01:51:15.456453 Error after 19.323708ms: context deadline exceeded
+2022/09/06 01:51:16.476552 Error after 19.960234ms: context deadline exceeded
+2022/09/06 01:51:17.497449 Error after 19.847565ms: context deadline exceeded
+2022/09/06 01:51:18.517580 Error after 20.011119ms: context deadline exceeded
+2022/09/06 01:51:19.537625 Error after 19.952122ms: context deadline exceeded
+2022/09/06 01:51:20.558140 Error after 20.01018ms: context deadline exceeded
+2022/09/06 01:51:21.559110 Summary:
+2022/09/06 01:51:21.559172 - interval:   10.170091554s
+2022/09/06 01:51:21.559188 - attempts:   10
+2022/09/06 01:51:21.559197 - successful: 4,  40.00%
+2022/09/06 01:51:21.559201 - min:        8.341306ms
+2022/09/06 01:51:21.559206 - average:    16.487783ms
+2022/09/06 01:51:21.559209 - max:        20.011119ms
+[user@myhost ~]$
 ```

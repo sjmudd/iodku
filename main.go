@@ -80,41 +80,43 @@ func printSummary(interval time.Duration, results []Result) {
 	}
 }
 
+// common exit code handling
+func exitIfCondition(condition bool, message string, exitCode int) {
+	if condition {
+		log.Printf(message)
+		os.Exit(exitCode)
+	}
+}
+
 func main() {
 	var results []Result
 
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
-	insertInterval := flag.String("insert-interval", "1s", "insert interval as understood by go")
+	insertInterval := flag.String("insert-interval", "1s", "insert interval as understood by Go")
 	count := flag.Int("count", -1, "number of inserts to perform, default -1 = infinite")
 	summary := flag.Bool("summary", false, "provide a summary when the insert count has been reached")
+	maxWait := flag.String("max-wait", "1s", "maximum time to wait for the insert to complete as understood by Go")
 	flag.Parse()
 
 	parsedInterval, err := time.ParseDuration(*insertInterval)
-	if err != nil {
-		log.Printf("Unable to parse insert-interval")
-		os.Exit(1)
-	}
+	exitIfCondition(err != nil, "Unable to parse insert-interval", 1)
+
+	maxWaitInterval, err := time.ParseDuration(*maxWait)
+	exitIfCondition(err != nil, "Unable to parse max-wait", 1)
 
 	dsn := os.Getenv("MYSQL_DSN")
-	if dsn == "" {
-		log.Printf("MYSQL_DSN needed to connect to server not provided or empty.  See: https://github.com/go-sql-driver/mysql#dsn-data-source-name")
-		os.Exit(1)
-	}
+	exitIfCondition(dsn == "", "MYSQL_DSN needed to connect to server not provided or empty.  See: https://github.com/go-sql-driver/mysql#dsn-data-source-name", 1)
 
 	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Printf(fmt.Sprintf("Failed to open DB connections: %+v", err))
-		os.Exit(1)
-
-	}
+	exitIfCondition(err != nil, fmt.Sprintf("Failed to open DB connections: %+v", err), 1)
 	defer db.Close()
 
 	startTime := time.Now()
 	for *count == -1 || *count > 0 {
-		func() {
+		{
 			started := time.Now()
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), maxWaitInterval)
 			defer cancel()
 			_, err = db.ExecContext(ctx, WriteProbeQuery)
 			elapsed := time.Since(started)
@@ -130,7 +132,7 @@ func main() {
 					err:      err,
 					duration: elapsed,
 				})
-		}()
+		}
 
 		time.Sleep(parsedInterval)
 		if *count != -1 {
