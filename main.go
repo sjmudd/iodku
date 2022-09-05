@@ -70,7 +70,7 @@ func durationMetrics(results []Result) (int, time.Duration, time.Duration, time.
 func printSummary(interval time.Duration, results []Result) {
 	log.Printf("Summary:")
 	log.Printf("- interval:   %v", interval)
-	log.Printf("- size:       %d", len(results))
+	log.Printf("- attempts:   %d", len(results))
 	if len(results) > 0 {
 		success, min, max, average := durationMetrics(results)
 		log.Printf("- successful: %d, %6.2f%%", success, 100.0*float64(success)/float64(len(results)))
