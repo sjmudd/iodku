@@ -26,6 +26,7 @@ to configure how `iodku` will connect to the server.
 
 * `--insert-interval=XXX` is used to determine the insert interval. Default is `1s`. See: https://github.com/go-sql-driver/mysql#dsn-data-source-name for the exact format.
 * `--count=xx` number of inserts to perform, default is -1 (insert forever)
+* `--summary` provide summary statistics of the inserts which were performed.
 
 ## Sample output
 
