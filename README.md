@@ -85,7 +85,7 @@ Below is a list of some additional changes which could be made to make the usage
 
 * add an optional "ping time checker" starting at the same time as the insert
   * this allows us to verify network latency/jitter to the server without doing any transactional work.
-  * separate go routines starting in parallel and using sync.WaitGroup
+  * use separate go routines starting in parallel and using `sync.WaitGroup` to wait for both to finish before continuing.
 * add an option to have multiple parallel inserters
 * add an option to be able to provide a pre-configured sized payload when performing the insert
 * for group replication, collect GR group members and status and if the primary fails change to use the failed over primary instead of the failed primary being talked to.
